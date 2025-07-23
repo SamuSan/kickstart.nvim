@@ -5,17 +5,17 @@
 =====================================================================
 ========                                    .-----.          ========
 ========         .----------------------.   | === |          ========
-========         |.-""""""""""""""""""-.|   |-----|          ========
+========         |.-''''''''''''''''''-.|   |-----|          ========
 ========         ||                    ||   | === |          ========
 ========         ||   KICKSTART.NVIM   ||   |-----|          ========
 ========         ||                    ||   | === |          ========
 ========         ||                    ||   |-----|          ========
 ========         ||:Tutor              ||   |:::::|          ========
 ========         |'-..................-'|   |____o|          ========
-========         `"")----------------(""`   ___________      ========
+========         `'')----------------(''`   ___________      ========
 ========        /::::::::::|  |::::::::::\  \ no mouse \     ========
 ========       /:::========|  |==hjkl==:::\  \ required \    ========
-========      '""""""""""""'  '""""""""""""'  '""""""""""'   ========
+========      ''''''''''''''  ''''''''''''''  ''''''''''''   ========
 ========                                                     ========
 =====================================================================
 =====================================================================
@@ -63,7 +63,7 @@ Kickstart Guide:
     This should be the first place you go to look when you're stuck or confused
     with something. It's one of my favorite Neovim features.
 
-    MOST IMPORTANTLY, we provide a keymap "<space>sh" to [s]earch the [h]elp documentation,
+    MOST IMPORTANTLY, we provide a keymap '<space>sh' to [s]earch the [h]elp documentation,
     which is very useful when you're not exactly sure of what you're looking for.
 
   I have left several `:help X` comments throughout the init.lua
@@ -91,7 +91,12 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
+
+-- Setting defaults for netrw
+-- vim.g.netrw_winsize = 20
+-- vim.g.netrw_banner = 0
+vim.g.netrw_liststyle = 3
 
 -- [[ Setting options ]]
 -- See `:help vim.opt`
@@ -159,6 +164,9 @@ vim.opt.scrolloff = 10
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
+-- Map jj to escape
+vim.keymap.set('i', 'jj', '<ESC>', { silent = true })
+
 -- Clear highlights on search when pressing <Esc> in normal mode
 --  See `:help hlsearch`
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
@@ -175,10 +183,10 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
 -- TIP: Disable arrow keys in normal mode
--- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
--- vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
--- vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
--- vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
+-- vim.keymap.set('n', '<left>', '<cmd>echo 'Use h to move!!'<CR>')
+-- vim.keymap.set('n', '<right>', '<cmd>echo 'Use l to move!!'<CR>')
+-- vim.keymap.set('n', '<up>', '<cmd>echo 'Use k to move!!'<CR>')
+-- vim.keymap.set('n', '<down>', '<cmd>echo 'Use j to move!!'<CR>')
 
 -- Keybinds to make split navigation easier.
 --  Use CTRL+<hjkl> to switch between windows
@@ -188,6 +196,20 @@ vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left wind
 vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+-- vim.keymap.set('n', '<leader>rt', '<cmd>lua require("neotest").run.run(vim.fn.expand("%"))<cr>', { desc = 'run current Rspec file' })
+-- vim.keymap.set('n', '<leader>rr', '<cmd>lua require("neotest").run.run()<cr>', { desc = 'run nearest test' })
+-- vim.keymap.set('n', '<leader>st', '<cmd>lua require("neotest").summary.toggle()<cr>', { desc = 'toggle summary window' })
+vim.keymap.set('n', '<leader>nr', '<cmd>lua require("neotest").run.run()<cr>', { desc = 'Run nearest test' })
+vim.keymap.set('n', '<leader>nf', '<cmd>lua require("neotest").run.run(vim.fn.expand("%"))<cr>', {desc = 'Run current file'})
+vim.keymap.set('n', '<leader>na', '<cmd>lua require("neotest").run.run({ suite = true })<cr>', {desc = 'Run all tests'})
+vim.keymap.set('n', '<leader>nd', '<cmd>lua require("neotest").run.run({strategy = "dap"})<cr>', {desc = 'Debug nearest test'})
+vim.keymap.set('n', '<leader>ns', '<cmd>lua require("neotest").run.stop()<cr>', {desc = 'Stop test'})
+vim.keymap.set('n', '<leader>nn', '<cmd>lua require("neotest").run.attach()<cr>', {desc = 'Attach to nearest test'})
+vim.keymap.set('n', '<leader>no', '<cmd>lua require("neotest").output.open()<cr>', {desc = 'Show test output'})
+vim.keymap.set('n', '<leader>np', '<cmd>lua require("neotest").output_panel.toggle()<cr>', {desc = 'Toggle output panel'})
+vim.keymap.set('n', '<leader>nv', '<cmd>lua require("neotest").summary.toggle()<cr>', {desc = 'Toggle summary'} )
+vim.keymap.set('n', '<leader>nc', '<cmd>lua require("neotest").run.run({ suite = true, env = { CI = true } })<cr>',{desc = 'Run everything'})
+
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -202,6 +224,22 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     vim.highlight.on_yank()
   end,
 })
+
+-- vim.api.nvim_create_autocmd({ "InsertLeave", "TextChanged" }, {
+--   callback = function()
+--     if #vim.api.nvim_buf_get_name(0) ~= 0 and vim.bo.buflisted then
+--       vim.cmd "silent w"
+
+--       local time = os.date "%I:%M %p"
+
+--       -- print nice colored msg
+--       vim.api.nvim_echo({ { "󰄳", "LazyProgressDone" }, { " file autosaved at " .. time } }, false, {})
+
+--       clear_cmdarea()
+--     end
+--   end,
+-- })
+
 
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
@@ -263,6 +301,24 @@ require('lazy').setup({
         changedelete = { text = '~' },
       },
     },
+  },
+  {
+    "nvim-neotest/neotest",
+    lazy = true,
+    dependencies = {
+      "nvim-neotest/nvim-nio",
+      "nvim-lua/plenary.nvim",
+      "antoinemadec/FixCursorHold.nvim",
+      "nvim-treesitter/nvim-treesitter",
+      "olimorris/neotest-rspec",
+    },
+    config = function()
+      require("neotest").setup({
+        adapters = {
+          require("neotest-rspec")
+        },
+      })
+    end
   },
 
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
@@ -335,6 +391,24 @@ require('lazy').setup({
       },
     },
   },
+  {
+    "christoomey/vim-tmux-navigator",
+    cmd = {
+      "TmuxNavigateLeft",
+      "TmuxNavigateDown",
+      "TmuxNavigateUp",
+      "TmuxNavigateRight",
+      "TmuxNavigatePrevious",
+      "TmuxNavigatorProcessList",
+    },
+    keys = {
+      { "<c-h>", "<cmd><C-U>TmuxNavigateLeft<cr>" },
+      { "<c-j>", "<cmd><C-U>TmuxNavigateDown<cr>" },
+      { "<c-k>", "<cmd><C-U>TmuxNavigateUp<cr>" },
+      { "<c-l>", "<cmd><C-U>TmuxNavigateRight<cr>" },
+      { "<c-\\>", "<cmd><C-U>TmuxNavigatePrevious<cr>" },
+    },
+  },
 
   -- NOTE: Plugins can specify dependencies.
   --
@@ -369,7 +443,7 @@ require('lazy').setup({
     },
     config = function()
       -- Telescope is a fuzzy finder that comes with a lot of different things that
-      -- it can fuzzy find! It's more than just a "file finder", it can search
+      -- it can fuzzy find! It's more than just a 'file finder', it can search
       -- many different aspects of Neovim, your workspace, LSP, and more!
       --
       -- The easiest way to use Telescope, is to start by doing something like:
@@ -486,10 +560,10 @@ require('lazy').setup({
       -- LSP stands for Language Server Protocol. It's a protocol that helps editors
       -- and language tooling communicate in a standardized fashion.
       --
-      -- In general, you have a "server" which is some tool built to understand a particular
+      -- In general, you have a 'server' which is some tool built to understand a particular
       -- language (such as `gopls`, `lua_ls`, `rust_analyzer`, etc.). These Language Servers
       -- (sometimes called LSP servers, but that's kind of like ATM Machine) are standalone
-      -- processes that communicate with some "client" - in this case, Neovim!
+      -- processes that communicate with some 'client' - in this case, Neovim!
       --
       -- LSP provides Neovim with features like:
       --  - Go to definition
@@ -658,6 +732,21 @@ require('lazy').setup({
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
+        ruby_lsp = {
+          enabled = lsp == "ruby_lsp",
+        },
+        solargraph = {
+          enabled = lsp == "solargraph",
+        },
+        rubocop = {
+          -- If Solargraph and Rubocop are both enabled as an LSP,
+          -- diagnostics will be duplicated because Solargraph
+          -- already calls Rubocop if it is installed
+          enabled = formatter == "rubocop" and lsp ~= "solargraph",
+        },
+        standardrb = {
+          enabled = formatter == "standardrb",
+        },
         -- clangd = {},
         -- gopls = {},
         -- pyright = {},
@@ -740,7 +829,7 @@ require('lazy').setup({
     opts = {
       notify_on_error = false,
       format_on_save = function(bufnr)
-        -- Disable "format_on_save lsp_fallback" for languages that don't
+        -- Disable 'format_on_save lsp_fallback' for languages that don't
         -- have a well standardized coding style. You can add additional
         -- languages here or re-enable it for the disabled ones.
         local disable_filetypes = { c = true, cpp = true }
@@ -758,10 +847,10 @@ require('lazy').setup({
       formatters_by_ft = {
         lua = { 'stylua' },
         -- Conform can also run multiple formatters sequentially
-        -- python = { "isort", "black" },
+        -- python = { 'isort', 'black' },
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
-        -- javascript = { "prettierd", "prettier", stop_after_first = true },
+        -- javascript = { 'prettierd', 'prettier', stop_after_first = true },
       },
     },
   },
@@ -952,7 +1041,20 @@ require('lazy').setup({
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+      ensure_installed = {
+        'bash',
+        'c',
+        'diff',
+        'html',
+        'lua',
+        'luadoc',
+        'markdown',
+        'markdown_inline',
+        'ruby',
+        'query',
+        'vim',
+        'vimdoc'
+      },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
