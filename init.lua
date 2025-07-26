@@ -107,7 +107,7 @@ vim.g.netrw_liststyle = 3
 vim.opt.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
--- vim.opt.relativenumber = true
+vim.opt.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = 'a'
@@ -122,6 +122,11 @@ vim.opt.showmode = false
 vim.schedule(function()
   vim.opt.clipboard = 'unnamedplus'
 end)
+-- Set up spaces and tabs
+vim.o.tabstop = 2 -- A TAB character looks like 4 spaces
+vim.o.expandtab = true -- Pressing the TAB key will insert spaces instead of a TAB character
+vim.o.softtabstop = 2 -- Number of spaces inserted instead of a TAB character
+vim.o.shiftwidth = 2 -- Number of spaces inserted when indenting
 
 -- Enable break indent
 vim.opt.breakindent = true
@@ -210,6 +215,8 @@ vim.keymap.set('n', '<leader>np', '<cmd>lua require("neotest").output_panel.togg
 vim.keymap.set('n', '<leader>nv', '<cmd>lua require("neotest").summary.toggle()<cr>', {desc = 'Toggle summary'} )
 vim.keymap.set('n', '<leader>nc', '<cmd>lua require("neotest").run.run({ suite = true, env = { CI = true } })<cr>',{desc = 'Run everything'})
 
+-- Remap jj to esc
+vim.keymap.set("i", "jj", "<ESC>", { silent = true })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -320,6 +327,39 @@ require('lazy').setup({
       })
     end
   },
+  {
+  'stevearc/oil.nvim',
+  ---@module 'oil'
+  ---@type oil.SetupOpts
+  opts = {},
+  -- Optional dependencies
+  dependencies = { { "echasnovski/mini.icons", opts = {} } },
+  -- dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if you prefer nvim-web-devicons
+  -- Lazy loading is not recommended because it is very tricky to make it work correctly in all situations.
+  lazy = false,
+  keys = {
+    { "<leader>o", "<cmd>Oil<cr>", desc = "Oil" },
+  },
+},
+--   {
+--   "nvim-neo-tree/neo-tree.nvim",
+--   branch = "v3.x",
+--   dependencies = {
+--     "nvim-lua/plenary.nvim",
+--     "nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
+--     "MunifTanjim/nui.nvim",
+--     -- Optional image support for file preview: See `# Preview Mode` for more information.
+--     -- {"3rd/image.nvim", opts = {}},
+--     -- OR use snacks.nvim's image module:
+--     -- "folke/snacks.nvim",
+--   },
+--   lazy = false, -- neo-tree will lazily load itself
+--   ---@module "neo-tree"
+--   ---@type neotree.Config?
+--   opts = {
+--     -- add options here
+--   },
+-- },
 
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
   --
