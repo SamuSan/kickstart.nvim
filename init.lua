@@ -562,6 +562,12 @@ require('lazy').setup({
     end,
   },
 
+  {
+    "pmizio/typescript-tools.nvim",
+    dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
+    opts = {},
+  },
+
   -- LSP Plugins
   {
     -- `lazydev` configures Lua LSP for your Neovim config, runtime and plugins
@@ -787,6 +793,7 @@ require('lazy').setup({
         standardrb = {
           enabled = formatter == "standardrb",
         },
+        tsserver
         -- clangd = {},
         -- gopls = {},
         -- pyright = {},
