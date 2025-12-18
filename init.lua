@@ -215,9 +215,13 @@ vim.keymap.set('n', '<leader>np', '<cmd>lua require("neotest").output_panel.togg
 vim.keymap.set('n', '<leader>nv', '<cmd>lua require("neotest").summary.toggle()<cr>', {desc = 'Toggle summary'} )
 vim.keymap.set('n', '<leader>nc', '<cmd>lua require("neotest").run.run({ suite = true, env = { CI = true } })<cr>',{desc = 'Run everything'})
 
--- Remap jj to esc
-vim.keymap.set("i", "jj", "<ESC>", { silent = true })
 
+-- Tmux Keybings
+-- Lua example for horizontal split without focus switch
+vim.api.nvim_set_keymap('n', '<leader>ts', ':silent !tmux split-window -v -d<CR>', { noremap = true, silent = true })
+
+-- Lua example for vertical split without focus switch
+vim.api.nvim_set_keymap('n', '<leader>tv', ':silent !tmux split-window -h -d<CR>', { noremap = true, silent = true })
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -321,6 +325,10 @@ require('lazy').setup({
     },
     config = function()
       require("neotest").setup({
+        summary = {
+          open = "botright vsplit | vertical resize 100",
+          enabled = true,
+        },
         adapters = {
           require("neotest-rspec")
         },
@@ -777,12 +785,26 @@ require('lazy').setup({
       --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
+      local nvim_lsp = require("lspconfig")
       local servers = {
         ruby_lsp = {
           enabled = lsp == "ruby_lsp",
         },
         solargraph = {
           enabled = lsp == "solargraph",
+          cmd = { os.getenv( "HOME" ) .. "/.asdf/shims/solargraph", 'stdio' },
+          root_dir = nvim_lsp.util.root_pattern("Gemfile", ".git", "."),
+          settings = {
+            solargraph = {
+              autoformat = true,
+              completion = true,
+              diagnostic = true,
+              folding = true,
+              references = true,
+              rename = true,
+              symbols = true
+            }
+          }
         },
         rubocop = {
           -- If Solargraph and Rubocop are both enabled as an LSP,
@@ -793,7 +815,7 @@ require('lazy').setup({
         standardrb = {
           enabled = formatter == "standardrb",
         },
-        tsserver
+        -- tsserver = {},
         -- clangd = {},
         -- gopls = {},
         -- pyright = {},
